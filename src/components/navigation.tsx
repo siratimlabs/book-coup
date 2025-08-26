@@ -3,13 +3,29 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { useRole } from "@/contexts/role-context"
-import { BookOpen, Users, Plus, BarChart3, Library, User } from "lucide-react"
+import { useAuth } from "@/contexts/auth-context"
+import { BookOpen, Users, Plus, BarChart3, Library, User, LogOut } from "lucide-react"
 import { cn } from "@/lib/utils"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 export function Navigation() {
-  const { role, setRole, userName } = useRole()
+  const { user, logout, isAuthenticated } = useAuth()
   const pathname = usePathname()
+
+  // Don't show navigation on auth pages
+  if (pathname === "/login" || pathname === "/register") {
+    return null
+  }
+
+  if (!isAuthenticated || !user) {
+    return null
+  }
 
   const adminNavItems = [
     { href: "/admin", label: "Dashboard", icon: BarChart3 },
@@ -23,10 +39,10 @@ export function Navigation() {
     { href: "/my-books", label: "My Books", icon: User },
   ]
 
-  const navItems = role === "admin" ? adminNavItems : userNavItems
+  const navItems = user.role === "admin" ? adminNavItems : userNavItems
 
-  const toggleRole = () => {
-    setRole(role === "admin" ? "user" : "admin")
+  const handleLogout = async () => {
+    await logout()
   }
 
   return (
@@ -34,7 +50,7 @@ export function Navigation() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex items-center">
-            <Link href={role === "admin" ? "/admin" : "/library"} className="flex items-center space-x-2">
+            <Link href={user.role === "admin" ? "/admin" : "/library"} className="flex items-center space-x-2">
               <BookOpen className="h-8 w-8 text-blue-600" />
               <span className="text-xl font-bold text-gray-900">Book Coup</span>
             </Link>
@@ -62,10 +78,30 @@ export function Navigation() {
           </div>
 
           <div className="flex items-center space-x-4">
-            <span className="text-sm text-gray-600">Welcome, {userName}</span>
-            <Button variant="outline" size="sm" onClick={toggleRole} className="text-xs bg-transparent">
-              Switch to {role === "admin" ? "User" : "Admin"}
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="flex items-center space-x-2">
+                  <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                    <User className="h-4 w-4 text-blue-600" />
+                  </div>
+                  <div className="hidden md:block text-left">
+                    <p className="text-sm font-medium text-gray-900">{user.name}</p>
+                    <p className="text-xs text-gray-500 capitalize">{user.role}</p>
+                  </div>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <div className="px-2 py-1.5">
+                  <p className="text-sm font-medium">{user.name}</p>
+                  <p className="text-xs text-gray-500">{user.email}</p>
+                </div>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleLogout} className="text-red-600">
+                  <LogOut className="h-4 w-4 mr-2" />
+                  Sign Out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       </div>

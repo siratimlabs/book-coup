@@ -1,4 +1,18 @@
-import type { Book, Borrower, BorrowRecord } from "./types"
+import type { User, Book, Borrower, BorrowRecord } from "./types";
+import bcrypt from "bcryptjs";
+
+export const users: User[] = [
+  {
+    username: "user",
+    password: bcrypt.hashSync("12345678", 10),
+    role: "user"
+  },
+  {
+    username: "admin",
+    password: bcrypt.hashSync("12345678", 10),
+    role: 'admin'
+  },
+];
 
 export const mockBooks: Book[] = [
   {
@@ -40,7 +54,7 @@ export const mockBooks: Book[] = [
     isbn: "978-0132350884",
     status: "available",
   },
-]
+];
 
 export const mockBorrowers: Borrower[] = [
   {
@@ -70,7 +84,7 @@ export const mockBorrowers: Borrower[] = [
     joinDate: "2023-05-10",
     status: "suspended",
   },
-]
+];
 
 export const mockBorrowRecords: BorrowRecord[] = [
   {
@@ -83,4 +97,4 @@ export const mockBorrowRecords: BorrowRecord[] = [
     dueDate: "2024-01-22",
     status: "active",
   },
-]
+];
