@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { RoleProvider } from "@/contexts/role-context";
-import { AuthProvider } from "@/contexts/authcontext";
+import { AuthProvider } from "@/contexts/auth-context";
 import { Navigation } from "@/components/navigation";
 import { Toaster } from "@/components/ui/sonner";
 
