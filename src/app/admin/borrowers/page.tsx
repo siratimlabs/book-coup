@@ -37,7 +37,7 @@ export default function BorrowersPage() {
     const borrower = borrowers.find((b) => b.id === borrowerId)
     const newStatus = borrower?.status === "active" ? "suspended" : "active"
     
-    toast.success(`"${borrower?.name} has been ${newStatus}.`)
+    
   }
 
   return (
